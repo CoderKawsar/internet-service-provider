@@ -4,26 +4,62 @@ import { Button, Col, Row } from "antd";
 import Form from "@/components/Forms/Form";
 import FormInput from "@/components/Forms/FormInput";
 import FormSelectField from "@/components/Forms/FormSelect";
-import { districtOptions } from "@/constants/districtOptions";
-import { useState } from "react";
-import { thanaOptions } from "@/constants/thanaOptions";
+import { useEffect, useState } from "react";
 import FormTextArea from "@/components/Forms/FormTextArea";
+import {
+  useGetAllCoverageDistrictsQuery,
+  useGetUpazillaOrThanasOfADistrictIdQuery,
+} from "@/redux/api/coverageApi";
+import { ICoverageDistrict } from "@/interfaces/coverageDistrict";
+import { ICoverageUpazillaOrThana } from "@/interfaces/coverageUpazillaOrThana";
 
 function RegistrationPage() {
-  const [thanaOptionVals, setThanaOptionVals] = useState();
+  const [selectedDistrict, setSelectedDistrict] = useState<string>("");
+  const [upazillaOrThanaOptions, setUpazillaOrThanaOptions] =
+    useState<ICoverageUpazillaOrThana[]>();
+
+  const { data: coverageDistricts } =
+    useGetAllCoverageDistrictsQuery(undefined);
+  const {
+    data: coverageUpazillaOrThanas,
+    isLoading,
+    refetch,
+  } = useGetUpazillaOrThanasOfADistrictIdQuery(selectedDistrict);
+
+  const districtOptions = coverageDistricts?.map(
+    (coverageDistrict: ICoverageDistrict) => {
+      return {
+        label: coverageDistrict.district,
+        value: coverageDistrict.id,
+      };
+    }
+  );
+
+  useEffect(() => {
+    setUpazillaOrThanaOptions(undefined);
+    refetch();
+    if (!!coverageUpazillaOrThanas) {
+      const coverageUpazillaOrThanaOptions = coverageUpazillaOrThanas?.map(
+        (coverageThana: ICoverageUpazillaOrThana) => {
+          return {
+            label: coverageThana.upazillaOrThana,
+            value: coverageThana.id,
+          };
+        }
+      );
+      setUpazillaOrThanaOptions(coverageUpazillaOrThanaOptions);
+    } else {
+      setUpazillaOrThanaOptions(undefined);
+    }
+  }, [selectedDistrict, refetch]);
 
   const handleDistrictChange = (district: string) => {
-    const selectedThanaOptions = thanaOptions.find(
-      (thanaOption) => thanaOption.district === district
-    );
-
-    // @ts-ignore
-    setThanaOptionVals(selectedThanaOptions.options);
+    setSelectedDistrict(district);
   };
 
   const onSubmit = async (data: any) => {
     try {
-      console.log("user logged in");
+      console.log("user registered in");
     } catch (err: any) {
       console.error(err.message);
     }
@@ -87,7 +123,7 @@ function RegistrationPage() {
                 size="large"
                 label="Thana"
                 // @ts-ignore
-                options={thanaOptionVals}
+                options={upazillaOrThanaOptions}
               />
             </Col>
             <Col xs={24} sm={12} md={12} lg={12} className="mb-4 gutter-row">
