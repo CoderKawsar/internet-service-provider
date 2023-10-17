@@ -1,15 +1,30 @@
 "use client";
 
-import { Button, Col, Row } from "antd";
+import { Button, Col, Row, message } from "antd";
 import loginImage from "@/assets/images/login page.svg";
 import Image from "next/image";
 import Form from "@/components/Forms/Form";
 import FormInput from "@/components/Forms/FormInput";
+import { useLoginUserMutation } from "@/redux/api/userApi";
+import { storeUserInfo } from "@/services/user.service";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { login } from "@/redux/features/userSlice";
 
 function LoginPage() {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const [loginUser] = useLoginUserMutation();
+
   const onSubmit = async (data: any) => {
     try {
-      console.log("user logged in");
+      const res = await loginUser({ ...data }).unwrap();
+      if (res?.accessToken) {
+        storeUserInfo({ accessToken: res?.accessToken });
+        dispatch(login());
+        router.push("/home");
+        message.success("User logged in successfully!");
+      }
     } catch (err: any) {
       console.error(err.message);
     }
@@ -38,7 +53,7 @@ function LoginPage() {
           <Form submitHandler={onSubmit}>
             <div>
               <FormInput
-                name="id"
+                name="email"
                 type="email"
                 size="large"
                 label="Email"

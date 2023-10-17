@@ -52,7 +52,7 @@ function CarouselSection() {
       <div>
         <Row align="middle" justify="center">
           <Col span={10} className="text-right">
-            <Image src={carouselImage3} alt="test" />
+            <Image src={carouselImage3} priority={true} alt="test" />
           </Col>
           <Col span={8}>
             <h2>

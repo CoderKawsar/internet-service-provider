@@ -31,16 +31,19 @@ const FormInput = ({
 
   return (
     <>
-      {required ? (
-        <span
-          style={{
-            color: "red",
-          }}
-        >
-          *
-        </span>
-      ) : null}
-      {label ? label : null}
+      <div className="flex items-center">
+        {required ? (
+          <span
+            style={{
+              color: "red",
+              fontSize: "32px",
+            }}
+          >
+            *
+          </span>
+        ) : null}
+        {label ? label : null}
+      </div>
       <Controller
         control={control}
         name={name}

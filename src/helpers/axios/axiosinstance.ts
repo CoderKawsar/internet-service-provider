@@ -1,7 +1,7 @@
-import axios from "axios";
 import { authKey } from "@/constants/storageKey";
 import { IGenericErrorResponse, ResponseSuccessType } from "@/types/common";
 import { getFromLocalStorage } from "@/utils/local-storage";
+import axios from "axios";
 
 const instance = axios.create();
 instance.defaults.headers.post["Content-Type"] = "application/json";
@@ -44,6 +44,8 @@ instance.interceptors.response.use(
       };
       return responseObject;
     }
+
+    // return Promise.reject(error);
   }
 );
 
