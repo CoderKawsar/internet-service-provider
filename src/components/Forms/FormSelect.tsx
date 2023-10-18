@@ -16,8 +16,8 @@ type SelectFieldProps = {
   placeholder?: string;
   label?: string;
   defaultValue?: SelectOptions;
+  required?: boolean;
   handleChange?: (el: string) => void;
-  thanaOptions?: SelectOptions[];
 };
 
 const FormSelectField = ({
@@ -28,13 +28,23 @@ const FormSelectField = ({
   options,
   label,
   defaultValue,
+  required,
   handleChange,
-  thanaOptions,
 }: SelectFieldProps) => {
   const { control } = useFormContext();
 
   return (
     <>
+      {required ? (
+        <span
+          style={{
+            color: "red",
+            fontSize: "32px",
+          }}
+        >
+          *
+        </span>
+      ) : null}
       {label ? label : null}
       <Controller
         control={control}
@@ -50,15 +60,6 @@ const FormSelectField = ({
           />
         )}
       />
-      {name === "thana" && thanaOptions && thanaOptions.length > 0 && (
-        <Select
-          size={size}
-          options={thanaOptions}
-          value={value}
-          style={{ width: "100%" }}
-          placeholder="Select Thana/Upazilla"
-        />
-      )}
     </>
   );
 };

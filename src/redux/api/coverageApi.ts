@@ -3,7 +3,7 @@ import { baseApi } from "./baseApi";
 
 const COVERAGE_DISTRICT_URL = "/coverage-districts";
 const COVERAGE_UPAZILLA_OR_THANA_URL = "/coverage-upazilla-or-thanas";
-const COVERAGE_AREA_URL = "/coverage-area";
+const COVERAGE_AREA_URL = "/coverage-areas";
 
 export const coverageApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -59,6 +59,13 @@ export const coverageApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.coverageUpazillaOrThana],
     }),
+    getCoverageAreasOfUpazillaOrThanaId: build.query({
+      query: (upazillaOrThanaId) => ({
+        url: `${COVERAGE_AREA_URL}/upazilla-or-thana/${upazillaOrThanaId}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.coverageArea],
+    }),
   }),
 });
 
@@ -70,4 +77,5 @@ export const {
   useGetUpazillaOrThanasOfADistrictIdQuery,
   useAddCoverageAreaMutation,
   useGetAllCoverageAreasQuery,
+  useGetCoverageAreasOfUpazillaOrThanaIdQuery,
 } = coverageApi;

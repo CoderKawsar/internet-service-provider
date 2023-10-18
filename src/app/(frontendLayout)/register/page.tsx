@@ -1,31 +1,49 @@
 "use client";
 
-import { Button, Col, Row } from "antd";
+import { Button, Col, Row, message } from "antd";
 import Form from "@/components/Forms/Form";
 import FormInput from "@/components/Forms/FormInput";
 import FormSelectField from "@/components/Forms/FormSelect";
 import { useEffect, useState } from "react";
-import FormTextArea from "@/components/Forms/FormTextArea";
 import {
   useGetAllCoverageDistrictsQuery,
+  useGetCoverageAreasOfUpazillaOrThanaIdQuery,
   useGetUpazillaOrThanasOfADistrictIdQuery,
 } from "@/redux/api/coverageApi";
 import { ICoverageDistrict } from "@/interfaces/coverageDistrict";
 import { ICoverageUpazillaOrThana } from "@/interfaces/coverageUpazillaOrThana";
+import { useGetAllPackagesQuery } from "@/redux/api/packageApi";
+import { IPackage } from "@/interfaces/package";
+import { ICoverageArea } from "@/interfaces/coverageArea";
+import FormTextArea from "@/components/Forms/FormTextArea";
+import { useRegisterUserMutation } from "@/redux/api/userApi";
+import { useAddCustomerMutation } from "@/redux/api/customerApi";
 
 function RegistrationPage() {
+  // defining states
   const [selectedDistrict, setSelectedDistrict] = useState<string>("");
+  const [selectedUpazillaOrThana, setSelectedUpazillaOrThana] =
+    useState<string>("");
   const [upazillaOrThanaOptions, setUpazillaOrThanaOptions] =
     useState<ICoverageUpazillaOrThana[]>();
+  const [areaOptions, setAreaOptions] = useState<ICoverageArea[]>();
+  const [upazillasIsLoading, setUpazillasIsLoading] = useState(false);
+  const [areasIsLoading, setAreasIsLoading] = useState(false);
 
+  // fetching coverage district, upazilla/thana, area
   const { data: coverageDistricts } =
     useGetAllCoverageDistrictsQuery(undefined);
-  const {
-    data: coverageUpazillaOrThanas,
-    isLoading,
-    refetch,
-  } = useGetUpazillaOrThanasOfADistrictIdQuery(selectedDistrict);
+  const { data: coverageUpazillaOrThanas, refetch: refetchCoverageUpazilla } =
+    useGetUpazillaOrThanasOfADistrictIdQuery(selectedDistrict);
+  const { data: coverageArea, refetch: refetchCoverageArea } =
+    useGetCoverageAreasOfUpazillaOrThanaIdQuery(selectedUpazillaOrThana);
+  const { data: packages } = useGetAllPackagesQuery(undefined);
 
+  // importing user/customer creation function
+  const [registerUser] = useRegisterUserMutation();
+  const [addCustomer] = useAddCustomerMutation();
+
+  // fetching district options
   const districtOptions = coverageDistricts?.map(
     (coverageDistrict: ICoverageDistrict) => {
       return {
@@ -35,9 +53,16 @@ function RegistrationPage() {
     }
   );
 
+  // fetching package options
+  const packageOptions = packages?.map((netPackage: IPackage) => {
+    return {
+      label: `${netPackage.speed} MbPS`,
+      value: netPackage.id,
+    };
+  });
+
+  // fetching coverage upazilla/thana optioins on change
   useEffect(() => {
-    setUpazillaOrThanaOptions(undefined);
-    refetch();
     if (!!coverageUpazillaOrThanas) {
       const coverageUpazillaOrThanaOptions = coverageUpazillaOrThanas?.map(
         (coverageThana: ICoverageUpazillaOrThana) => {
@@ -51,15 +76,66 @@ function RegistrationPage() {
     } else {
       setUpazillaOrThanaOptions(undefined);
     }
-  }, [selectedDistrict, refetch]);
+  }, [coverageUpazillaOrThanas]);
 
+  // fetching coverage area optioins on change
+  useEffect(() => {
+    if (!!coverageArea) {
+      const coverageAreaOptions = coverageArea?.map(
+        (coverageArea: ICoverageArea) => {
+          return {
+            label: coverageArea.area,
+            value: coverageArea.id,
+          };
+        }
+      );
+      setAreaOptions(coverageAreaOptions);
+    } else {
+      setAreaOptions(undefined);
+    }
+  }, [coverageArea]);
+
+  // handling district change
   const handleDistrictChange = (district: string) => {
     setSelectedDistrict(district);
+    setUpazillasIsLoading(true);
+    refetchCoverageUpazilla().then(() => setUpazillasIsLoading(false));
   };
 
+  // handling upazilla/thana change
+  const handleUpazillaOrThanaChange = (upazillaOrThana: string) => {
+    setSelectedUpazillaOrThana(upazillaOrThana);
+    setAreasIsLoading(true);
+    refetchCoverageArea().then(() => setAreasIsLoading(false));
+  };
+
+  // onsubmiting form, register user and add customer
   const onSubmit = async (data: any) => {
+    const {
+      name,
+      email,
+      password,
+      contactNo,
+      address,
+      coverageAreaId,
+      packageId,
+    } = data;
     try {
-      console.log("user registered in");
+      const user = await registerUser({
+        name,
+        email,
+        password,
+        contactNo,
+        role: "customer",
+        address,
+      });
+      await addCustomer({
+        coverageAreaId,
+        packageId,
+        // @ts-ignore
+        userId: user?.data?.id,
+      });
+      message.success("Customer registered successfully!");
     } catch (err: any) {
       console.error(err.message);
     }
@@ -68,12 +144,12 @@ function RegistrationPage() {
   return (
     <div className="mx-32">
       <h1 className="text-center">Register</h1>
-      <div>
+      <div className="my-8">
         <Form submitHandler={onSubmit}>
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
             <Col xs={24} sm={12} md={12} lg={12} className="mb-4 gutter-row">
               <FormInput
-                name="fullName"
+                name="name"
                 type="text"
                 size="large"
                 label="Full Name"
@@ -82,16 +158,16 @@ function RegistrationPage() {
             </Col>
             <Col xs={24} sm={12} md={12} lg={12} className="mb-4 gutter-row">
               <FormInput
-                name="mobileNumber"
+                name="contactNo"
                 type="text"
                 size="large"
-                label="Mobile Number"
+                label="Contact Number"
                 required
               />
             </Col>
             <Col xs={24} sm={12} md={12} lg={12} className="mb-4 gutter-row">
               <FormInput
-                name="id"
+                name="email"
                 type="email"
                 size="large"
                 label="Email"
@@ -115,41 +191,48 @@ function RegistrationPage() {
                 label="District"
                 options={districtOptions}
                 handleChange={(e) => handleDistrictChange(e)}
+                required
               />
             </Col>
             <Col xs={24} sm={12} md={12} lg={12} className="mb-4 gutter-row">
               <FormSelectField
-                name="thana"
+                name="upazillaOrThana"
                 size="large"
-                label="Thana"
+                label="Upazilla/Thana"
                 // @ts-ignore
                 options={upazillaOrThanaOptions}
+                handleChange={(e) => handleUpazillaOrThanaChange(e)}
+                required
+                disabled={upazillasIsLoading}
               />
             </Col>
             <Col xs={24} sm={12} md={12} lg={12} className="mb-4 gutter-row">
-              <FormTextArea name="address" label="Address" />
+              <FormSelectField
+                name="coverageAreaId"
+                size="large"
+                label="Coverage Area"
+                // @ts-ignore
+                options={areaOptions}
+                required
+                disabled={areasIsLoading}
+              />
+            </Col>
+            <Col xs={24} sm={12} md={12} lg={12} className="mb-4 gutter-row">
+              <FormTextArea name="address" label="Address" required />
             </Col>
           </Row>
           <Row>
             <Col xs={24} sm={12} md={12} lg={12} className="mb-4 gutter-row">
               <FormSelectField
-                name="package"
+                name="packageId"
                 size="large"
                 label="Package"
-                options={[
-                  {
-                    label: "5 MbPS",
-                    value: "5-mbps",
-                  },
-                  {
-                    label: "10 MbPS",
-                    value: "10-mbps",
-                  },
-                ]}
+                options={packageOptions}
+                required
               />
             </Col>
           </Row>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" danger>
             Register
           </Button>
         </Form>

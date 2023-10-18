@@ -12,6 +12,14 @@ export const userApi = baseApi.injectEndpoints({
         data: loginData,
       }),
     }),
+    registerUser: build.mutation({
+      query: (userData) => ({
+        url: `${USER_URL}`,
+        method: "POST",
+        data: userData,
+      }),
+      invalidatesTags: [tagTypes.user],
+    }),
     getAllUsers: build.query({
       query: () => ({
         url: `${USER_URL}`,
@@ -22,4 +30,8 @@ export const userApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useLoginUserMutation, useGetAllUsersQuery } = userApi;
+export const {
+  useLoginUserMutation,
+  useRegisterUserMutation,
+  useGetAllUsersQuery,
+} = userApi;

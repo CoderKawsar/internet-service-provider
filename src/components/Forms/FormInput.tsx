@@ -55,6 +55,7 @@ const FormInput = ({
               placeholder={placeholder}
               {...field}
               value={value ? value : field.value}
+              required={required}
             />
           ) : (
             <Input
@@ -63,6 +64,7 @@ const FormInput = ({
               placeholder={placeholder}
               {...field}
               value={value ? value : field.value}
+              required={required}
             />
           )
         }
