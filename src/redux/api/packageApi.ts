@@ -1,3 +1,4 @@
+import { IMeta, IPackage } from "@/types/common";
 import { tagTypes } from "../tag-types";
 import { baseApi } from "./baseApi";
 
@@ -15,11 +16,20 @@ export const packageApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.package],
     }),
     getAllPackages: build.query({
-      query: () => ({
-        url: `${PACKAGE_URL}`,
-        method: "GET",
-      }),
-      providesTags: [tagTypes.coverageDistrict],
+      query: (arg: Record<string, any>) => {
+        return {
+          url: `${PACKAGE_URL}`,
+          method: "GET",
+          params: arg,
+        };
+      },
+      transformResponse: (response: IPackage[] | undefined, meta: IMeta) => {
+        return {
+          packages: response,
+          meta,
+        };
+      },
+      providesTags: [tagTypes.package],
     }),
     addStreamingService: build.mutation({
       query: (data) => ({

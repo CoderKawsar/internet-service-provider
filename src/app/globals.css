@@ -26,6 +26,14 @@ h6 {
   font-family: "Bebas Neue", sans-serif;
 }
 
+p {
+  color: #333333;
+}
+
+.text-primary {
+  @apply text-[#333333];
+}
+
 .ant-carousel .slick-dots li button {
   background: black !important;
 }

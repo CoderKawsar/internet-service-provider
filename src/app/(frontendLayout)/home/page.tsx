@@ -1,13 +1,22 @@
 "use client";
 
 import CarouselSection from "@/components/ui/CarouselSection";
-import SinglePackage from "@/components/ui/SinglePackage";
+import MainContent from "@/components/ui/MainContent";
+import Packages from "@/components/ui/Packages";
+import { useGetAllPackagesQuery } from "@/redux/api/packageApi";
+import { getUserInfo } from "@/services/user.service";
 
 function Home() {
+  const { data: packages, isLoading } = useGetAllPackagesQuery({
+    limit: 3,
+  });
+
   return (
     <main>
       <CarouselSection />
-      <SinglePackage />
+      <MainContent>
+        <Packages loading={isLoading} packages={packages?.packages} />
+      </MainContent>
     </main>
   );
 }

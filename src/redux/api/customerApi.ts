@@ -1,3 +1,4 @@
+import { ICustomer, IMeta } from "@/types/common";
 import { tagTypes } from "../tag-types";
 import { baseApi } from "./baseApi";
 
@@ -14,8 +15,31 @@ export const customerApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.customer],
     }),
     getAllCustomers: build.query({
-      query: () => ({
-        url: `${CUSTOMER_URL}`,
+      query: (arg: Record<string, any>) => {
+        return {
+          url: `${CUSTOMER_URL}`,
+          method: "GET",
+          params: arg,
+        };
+      },
+      transformResponse: (response: ICustomer[] | undefined, meta: IMeta) => {
+        return {
+          packages: response,
+          meta,
+        };
+      },
+      providesTags: [tagTypes.customer],
+    }),
+    getCustomerById: build.query({
+      query: (customerId: string) => ({
+        url: `${CUSTOMER_URL}/${customerId}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.customer],
+    }),
+    getCustomerByUserId: build.query({
+      query: (userId: string) => ({
+        url: `${CUSTOMER_URL}/user/${userId}`,
         method: "GET",
       }),
       providesTags: [tagTypes.customer],
@@ -23,4 +47,9 @@ export const customerApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useAddCustomerMutation, useGetAllCustomersQuery } = customerApi;
+export const {
+  useAddCustomerMutation,
+  useGetAllCustomersQuery,
+  useGetCustomerByIdQuery,
+  useGetCustomerByUserIdQuery,
+} = customerApi;

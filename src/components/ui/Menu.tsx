@@ -1,7 +1,16 @@
 import { authKey } from "@/constants/storageKey";
 import { RootState } from "@/redux/store";
-import { removeUserInfo } from "@/services/user.service";
-import { Button, Col, ConfigProvider, Menu, MenuProps, Row } from "antd";
+import dynamic from "next/dynamic";
+import { getUserInfo, removeUserInfo } from "@/services/user.service";
+import {
+  Button,
+  Col,
+  ConfigProvider,
+  Menu,
+  MenuProps,
+  Row,
+  message,
+} from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -13,11 +22,13 @@ function MenuSection() {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
+  const isLoggedIn =
+    useSelector((state: RootState) => state.user.isLoggedIn) || !!getUserInfo();
 
   const logOut = () => {
     removeUserInfo(authKey);
     dispatch(logout());
+    message.info("Logged out!");
     router.push("/home");
   };
 
@@ -32,7 +43,7 @@ function MenuSection() {
     },
     {
       key: "packages",
-      label: "Packages",
+      label: <Link href="/packages">Packages</Link>,
     },
     {
       key: "services",
@@ -53,6 +64,10 @@ function MenuSection() {
 
   const authMenuItems = [
     {
+      key: "profile",
+      label: <Link href="/profile">My Profile</Link>,
+    },
+    {
       key: "logout",
       label: (
         <Button danger onClick={logOut}>
@@ -64,7 +79,7 @@ function MenuSection() {
   return (
     <nav className="w-full">
       <Row justify="space-between" style={{ width: "100%" }}>
-        <Col lg={20}>
+        <Col lg={18}>
           <ConfigProvider
             theme={{
               components: {
@@ -85,7 +100,7 @@ function MenuSection() {
             />
           </ConfigProvider>
         </Col>
-        <Col lg={4}>
+        <Col lg={6}>
           <ConfigProvider
             theme={{
               components: {
@@ -111,4 +126,4 @@ function MenuSection() {
   );
 }
 
-export default MenuSection;
+export default dynamic(() => Promise.resolve(MenuSection), { ssr: false });

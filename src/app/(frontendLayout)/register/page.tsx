@@ -10,14 +10,16 @@ import {
   useGetCoverageAreasOfUpazillaOrThanaIdQuery,
   useGetUpazillaOrThanasOfADistrictIdQuery,
 } from "@/redux/api/coverageApi";
-import { ICoverageDistrict } from "@/interfaces/coverageDistrict";
-import { ICoverageUpazillaOrThana } from "@/interfaces/coverageUpazillaOrThana";
 import { useGetAllPackagesQuery } from "@/redux/api/packageApi";
-import { IPackage } from "@/interfaces/package";
-import { ICoverageArea } from "@/interfaces/coverageArea";
 import FormTextArea from "@/components/Forms/FormTextArea";
 import { useRegisterUserMutation } from "@/redux/api/userApi";
 import { useAddCustomerMutation } from "@/redux/api/customerApi";
+import {
+  ICoverageArea,
+  ICoverageDistrict,
+  ICoverageUpazillaOrThana,
+  IPackage,
+} from "@/types/common";
 
 function RegistrationPage() {
   // defining states
@@ -37,7 +39,7 @@ function RegistrationPage() {
     useGetUpazillaOrThanasOfADistrictIdQuery(selectedDistrict);
   const { data: coverageArea, refetch: refetchCoverageArea } =
     useGetCoverageAreasOfUpazillaOrThanaIdQuery(selectedUpazillaOrThana);
-  const { data: packages } = useGetAllPackagesQuery(undefined);
+  const { data: packages } = useGetAllPackagesQuery({});
 
   // importing user/customer creation function
   const [registerUser] = useRegisterUserMutation();
@@ -54,7 +56,7 @@ function RegistrationPage() {
   );
 
   // fetching package options
-  const packageOptions = packages?.map((netPackage: IPackage) => {
+  const packageOptions = packages?.packages?.map((netPackage: IPackage) => {
     return {
       label: `${netPackage.speed} MbPS`,
       value: netPackage.id,
@@ -227,7 +229,7 @@ function RegistrationPage() {
                 name="packageId"
                 size="large"
                 label="Package"
-                options={packageOptions}
+                options={packageOptions ? packageOptions : []}
                 required
               />
             </Col>

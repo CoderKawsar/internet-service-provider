@@ -24,6 +24,8 @@ function LoginPage() {
         dispatch(login());
         router.push("/home");
         message.success("User logged in successfully!");
+      } else {
+        message.error("Invalid info. Login failed!");
       }
     } catch (err: any) {
       console.error(err.message);

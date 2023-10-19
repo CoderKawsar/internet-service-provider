@@ -17,6 +17,7 @@ type SelectFieldProps = {
   label?: string;
   defaultValue?: SelectOptions;
   required?: boolean;
+  disabled?: boolean;
   handleChange?: (el: string) => void;
 };
 
@@ -28,6 +29,7 @@ const FormSelectField = ({
   options,
   label,
   defaultValue,
+  disabled,
   required,
   handleChange,
 }: SelectFieldProps) => {
@@ -53,10 +55,11 @@ const FormSelectField = ({
           <Select
             onChange={handleChange ? handleChange : onChange}
             size={size}
-            options={options}
+            options={options || []}
             value={value}
             style={{ width: "100%" }}
             placeholder={placeholder}
+            disabled={disabled}
           />
         )}
       />
