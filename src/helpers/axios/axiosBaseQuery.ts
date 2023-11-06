@@ -30,6 +30,10 @@ export const axiosBaseQuery =
         },
         withCredentials: true,
       });
+      // @ts-ignore
+      if (result?.isError) {
+        return { error: result };
+      }
       return result;
     } catch (axiosError) {
       let err = axiosError as AxiosError;

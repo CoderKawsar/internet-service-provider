@@ -2,15 +2,7 @@ import { authKey } from "@/constants/storageKey";
 import { RootState } from "@/redux/store";
 import dynamic from "next/dynamic";
 import { getUserInfo, removeUserInfo } from "@/services/user.service";
-import {
-  Button,
-  Col,
-  ConfigProvider,
-  Menu,
-  MenuProps,
-  Row,
-  message,
-} from "antd";
+import { Button, ConfigProvider, Menu, MenuProps, message } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -77,51 +69,45 @@ function MenuSection() {
     },
   ];
   return (
-    <nav className="w-full">
-      <Row justify="space-between" style={{ width: "100%" }}>
-        <Col lg={18}>
-          <ConfigProvider
-            theme={{
-              components: {
-                Menu: {
-                  horizontalItemHoverColor: "#ff7875",
-                  horizontalItemSelectedColor: "#ff7875",
-                },
-              },
-            }}
-          >
-            <Menu
-              theme="light"
-              style={{ borderBottom: "0" }}
-              mode="horizontal"
-              selectedKeys={[current]}
-              onClick={onClick}
-              items={generalItems}
-            />
-          </ConfigProvider>
-        </Col>
-        <Col lg={6}>
-          <ConfigProvider
-            theme={{
-              components: {
-                Menu: {
-                  horizontalItemHoverColor: "#ff7875",
-                  horizontalItemSelectedColor: "#ff7875",
-                },
-              },
-            }}
-          >
-            <Menu
-              theme="light"
-              style={{ borderBottom: "0" }}
-              mode="horizontal"
-              selectedKeys={[current]}
-              onClick={onClick}
-              items={isLoggedIn ? authMenuItems : nonAuthMenuItems}
-            />
-          </ConfigProvider>
-        </Col>
-      </Row>
+    <nav className="w-full flex justify-between">
+      <ConfigProvider
+        theme={{
+          components: {
+            Menu: {
+              horizontalItemHoverColor: "#ff7875",
+              horizontalItemSelectedColor: "#ff7875",
+            },
+          },
+        }}
+      >
+        <Menu
+          theme="light"
+          style={{ borderBottom: "0", width: "100%" }}
+          mode="horizontal"
+          selectedKeys={[current]}
+          onClick={onClick}
+          items={generalItems}
+        />
+      </ConfigProvider>
+      <ConfigProvider
+        theme={{
+          components: {
+            Menu: {
+              horizontalItemHoverColor: "#ff7875",
+              horizontalItemSelectedColor: "#ff7875",
+            },
+          },
+        }}
+      >
+        <Menu
+          theme="light"
+          style={{ borderBottom: "0" }}
+          mode="horizontal"
+          selectedKeys={[current]}
+          onClick={onClick}
+          items={isLoggedIn ? authMenuItems : nonAuthMenuItems}
+        />
+      </ConfigProvider>
     </nav>
   );
 }

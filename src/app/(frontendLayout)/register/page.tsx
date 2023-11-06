@@ -10,7 +10,10 @@ import {
   useGetCoverageAreasOfUpazillaOrThanaIdQuery,
   useGetUpazillaOrThanasOfADistrictIdQuery,
 } from "@/redux/api/coverageApi";
-import { useGetAllPackagesQuery } from "@/redux/api/packageApi";
+import {
+  useGetAllPackagesQuery,
+  useGetSinglePackageQuery,
+} from "@/redux/api/packageApi";
 import FormTextArea from "@/components/Forms/FormTextArea";
 import { useRegisterUserMutation } from "@/redux/api/userApi";
 import { useAddCustomerMutation } from "@/redux/api/customerApi";
@@ -20,8 +23,13 @@ import {
   ICoverageUpazillaOrThana,
   IPackage,
 } from "@/types/common";
+import dynamic from "next/dynamic";
 
-function RegistrationPage() {
+function RegistrationPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   // defining states
   const [selectedDistrict, setSelectedDistrict] = useState<string>("");
   const [selectedUpazillaOrThana, setSelectedUpazillaOrThana] =
@@ -31,6 +39,14 @@ function RegistrationPage() {
   const [areaOptions, setAreaOptions] = useState<ICoverageArea[]>();
   const [upazillasIsLoading, setUpazillasIsLoading] = useState(false);
   const [areasIsLoading, setAreasIsLoading] = useState(false);
+
+  // fetching packageId if given on url query
+  const { packageId } = searchParams;
+
+  // fetching default package
+  const { data: defaultPackage } = useGetSinglePackageQuery(
+    packageId as string
+  );
 
   // fetching coverage district, upazilla/thana, area
   const { data: coverageDistricts } =
@@ -42,7 +58,7 @@ function RegistrationPage() {
   const { data: packages } = useGetAllPackagesQuery({});
 
   // importing user/customer creation function
-  const [registerUser] = useRegisterUserMutation();
+  const [registerUser, error] = useRegisterUserMutation();
   const [addCustomer] = useAddCustomerMutation();
 
   // fetching district options
@@ -137,6 +153,7 @@ function RegistrationPage() {
         // @ts-ignore
         userId: user?.data?.id,
       });
+      console.log(user);
       message.success("Customer registered successfully!");
     } catch (err: any) {
       console.error(err.message);
@@ -229,6 +246,14 @@ function RegistrationPage() {
                 name="packageId"
                 size="large"
                 label="Package"
+                defaultValue={
+                  defaultPackage
+                    ? {
+                        label: `${defaultPackage.speed} Mbps`,
+                        value: defaultPackage.id,
+                      }
+                    : null
+                }
                 options={packageOptions ? packageOptions : []}
                 required
               />
@@ -243,4 +268,4 @@ function RegistrationPage() {
   );
 }
 
-export default RegistrationPage;
+export default dynamic(() => Promise.resolve(RegistrationPage), { ssr: false });

@@ -31,6 +31,13 @@ export const packageApi = baseApi.injectEndpoints({
       },
       providesTags: [tagTypes.package],
     }),
+    getSinglePackage: build.query({
+      query: (id: string) => ({
+        url: `${PACKAGE_URL}/${id}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.package],
+    }),
     addStreamingService: build.mutation({
       query: (data) => ({
         url: `${STREAMING_SERVICE_URL}`,
@@ -52,6 +59,7 @@ export const packageApi = baseApi.injectEndpoints({
 export const {
   useAddPackageMutation,
   useGetAllPackagesQuery,
+  useGetSinglePackageQuery,
   useAddStreamingServiceMutation,
   useGetAllStreamingServicesQuery,
 } = packageApi;

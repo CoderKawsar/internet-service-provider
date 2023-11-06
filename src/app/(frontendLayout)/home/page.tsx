@@ -4,7 +4,6 @@ import CarouselSection from "@/components/ui/CarouselSection";
 import MainContent from "@/components/ui/MainContent";
 import Packages from "@/components/ui/Packages";
 import { useGetAllPackagesQuery } from "@/redux/api/packageApi";
-import { getUserInfo } from "@/services/user.service";
 
 function Home() {
   const { data: packages, isLoading } = useGetAllPackagesQuery({

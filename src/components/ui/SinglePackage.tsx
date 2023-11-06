@@ -6,6 +6,7 @@ import StreamingServices from "./StreamingServices";
 
 function SinglePackage({ packageInfo }: { packageInfo: IPackage }) {
   const {
+    id,
     speed,
     fee,
     noOfPublicIP,
@@ -85,7 +86,7 @@ function SinglePackage({ packageInfo }: { packageInfo: IPackage }) {
           {fee}৳{" "}
           <span className="font-normal text-sm text-[#858686]">/Month</span>
         </h4>
-        <Link href="/register">
+        <Link href={`/register?packageId=${id}`}>
           <div className="flex justify-center">
             <Button type="primary" danger>
               Register

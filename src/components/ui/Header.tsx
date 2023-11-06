@@ -18,7 +18,7 @@ function HeaderComponent() {
       }}
     >
       <Link
-        href="/"
+        href="/home"
         className=" w-[450px] flex items-center text-[#000000e0] hover:text-red-400"
       >
         <Image src={logoImage} width={40} height={40} alt="Fast Wireless IT" />
