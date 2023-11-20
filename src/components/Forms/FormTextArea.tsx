@@ -8,6 +8,7 @@ type TextAreaProps = {
   value?: string;
   placeholder?: string;
   required?: boolean;
+  className?: string;
 };
 
 const FormTextArea = ({
@@ -17,6 +18,7 @@ const FormTextArea = ({
   value,
   placeholder,
   required,
+  className,
 }: TextAreaProps) => {
   const { control } = useFormContext();
   return (
@@ -42,6 +44,7 @@ const FormTextArea = ({
             {...field}
             defaultValue={value}
             required={required}
+            className={className}
           />
         )}
       />

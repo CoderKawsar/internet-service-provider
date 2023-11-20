@@ -23,32 +23,32 @@ function SinglePackage({ packageInfo }: { packageInfo: IPackage }) {
           width: "350px",
         }}
       >
-        <div className="bg-[#E52A29] p-2 flex flex-col items-center rounded-t">
-          <h2 className="text-center text-white text-lg font-semibold mb-0 font-[Raleway]">
+        <div className="bg-primary p-2 flex flex-col items-center rounded-t">
+          <h2 className="text-center text-white text-lg font-semibold my-2 font-[Raleway]">
             FastWireless IT
           </h2>
           <p className="mb-1 text-orange-400">
             <WifiOutlined className="text-3xl p-2 bg-white rounded-full" />
           </p>
         </div>
-        <h2 className="text-2xl text-orange-400 text-center font-bold mb-8">
+        <h2 className="text-2xl text-orange-400 text-center font-bold my-8">
           {speed} Mbps
         </h2>
         <h4
-          className="text-md text-center text-[#858686] mx-8 pb-4"
+          className="text-md text-center text-primary mx-8 pb-4"
           style={{ borderBottom: "1px dashed #d2d2d2" }}
         >
           24 HOURS UNLIMITED
         </h4>
         <h4
-          className="text-md text-center text-[#858686] mx-8 pb-4"
+          className="text-md text-center text-primary mx-8 py-4"
           style={{ borderBottom: "1px dashed #d2d2d2" }}
         >
           Fiber Optics
         </h4>
         {noOfPublicIP ? (
           <h4
-            className="text-md text-center text-[#858686] mx-8 pb-4"
+            className="text-md text-center text-primary mx-8 py-4"
             style={{ borderBottom: "1px dashed #d2d2d2" }}
           >
             {noOfPublicIP} Public IP
@@ -57,19 +57,19 @@ function SinglePackage({ packageInfo }: { packageInfo: IPackage }) {
           ""
         )}
         <h4
-          className="text-md text-center text-[#858686] mx-8 pb-4"
+          className="text-md text-center text-primary mx-8 py-4"
           style={{ borderBottom: "1px dashed #d2d2d2" }}
         >
           Talk Time - {talkTime ? `${talkTime} minutes` : "N/A"}
         </h4>
         <h4
-          className="text-md text-center text-[#858686] mx-8 pb-4"
+          className="text-md text-center text-primary mx-8 py-4"
           style={{ borderBottom: "1px dashed #d2d2d2" }}
         >
           OTC Fee - {OTCFee} Taka
         </h4>
         <h4
-          className="text-md text-center text-[#858686] mx-8 pb-4"
+          className="text-md text-center text-primary mx-8 py-4"
           style={{ borderBottom: "1px dashed #d2d2d2" }}
         >
           24/7 Customer Care
@@ -82,9 +82,9 @@ function SinglePackage({ packageInfo }: { packageInfo: IPackage }) {
         ) : (
           ""
         )}
-        <h4 className="text-lg text-center text-orange-400 font-bold pb-6">
+        <h4 className="text-lg text-center text-orange-400 font-bold py-6">
           {fee}৳{" "}
-          <span className="font-normal text-sm text-[#858686]">/Month</span>
+          <span className="font-normal text-sm text-primary">/Month</span>
         </h4>
         <Link href={`/register?packageId=${id}`}>
           <div className="flex justify-center">

@@ -147,14 +147,22 @@ function RegistrationPage({
         role: "customer",
         address,
       });
-      await addCustomer({
+      const customer = await addCustomer({
         coverageAreaId,
         packageId,
         // @ts-ignore
         userId: user?.data?.id,
       });
-      console.log(user);
-      message.success("Customer registered successfully!");
+      // @ts-ignore
+      if (customer?.data?.id) {
+        message.success("Customer registered successfully!");
+      } else {
+        // @ts-ignore
+        const userError = user?.error?.message;
+        // @ts-ignore
+        const customerError = customer?.error?.message;
+        message.error(`Error Occured! ${userError} ${customerError}`);
+      }
     } catch (err: any) {
       console.error(err.message);
     }

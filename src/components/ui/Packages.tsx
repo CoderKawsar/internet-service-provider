@@ -11,7 +11,7 @@ function Packages({
   loading: boolean;
 }) {
   return (
-    <div>
+    <div className="mx-24">
       <div className="mb-16">
         <p className="text-center text-red-600 font-medium mb-2 leading-5">
           Our Packages

@@ -18,7 +18,6 @@ const ProfilePage = () => {
   const { id } = getUserInfo();
   const { data: user, isLoading } = useGetSingleUserQuery(id);
   const { data: customer } = useGetCustomerByUserIdQuery(id);
-  // console.log(id, user);
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Head>

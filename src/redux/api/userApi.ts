@@ -34,6 +34,13 @@ export const userApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.user],
     }),
+    sendFeedback: build.mutation({
+      query: (data) => ({
+        url: `${USER_URL}/send-feedback`,
+        method: "POST",
+        data,
+      }),
+    }),
   }),
 });
 
@@ -42,4 +49,5 @@ export const {
   useRegisterUserMutation,
   useGetAllUsersQuery,
   useGetSingleUserQuery,
+  useSendFeedbackMutation,
 } = userApi;

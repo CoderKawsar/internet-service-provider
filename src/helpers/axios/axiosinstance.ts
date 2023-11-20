@@ -29,10 +29,15 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   //@ts-ignore
   function (response) {
-    const responseObject: ResponseSuccessType = {
+    let responseObject: ResponseSuccessType = {
       data: response?.data?.data,
       meta: response?.data?.meta,
     };
+    if (!response?.data?.data && response?.data?.success) {
+      responseObject = {
+        data: true,
+      };
+    }
     return responseObject;
   },
   async function (error) {

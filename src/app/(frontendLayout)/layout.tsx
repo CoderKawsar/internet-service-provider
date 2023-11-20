@@ -9,7 +9,7 @@ function FrontEndLayout({ children }: { children: React.ReactNode }) {
   return (
     <Layout className="layout">
       <HeaderComponent />
-      <div className="px-4 bg-white min-h-screen">{children}</div>
+      <div className="bg-white min-h-screen">{children}</div>
       <Footer style={{ textAlign: "center" }}>
         Fastwireless IT - Internet Service Provider ©2023 Created by Ant UED
       </Footer>

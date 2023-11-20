@@ -4,15 +4,20 @@ import dynamic from "next/dynamic";
 import { getUserInfo, removeUserInfo } from "@/services/user.service";
 import { Button, ConfigProvider, Menu, MenuProps, message } from "antd";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "@/redux/features/userSlice";
 
 function MenuSection() {
   const [current, setCurrent] = useState<string>("home");
   const router = useRouter();
+  const pathName = usePathname();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setCurrent(pathName.split("/")[1]);
+  }, [pathName]);
 
   const isLoggedIn =
     useSelector((state: RootState) => state.user.isLoggedIn) || !!getUserInfo();
